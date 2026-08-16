@@ -1,0 +1,13 @@
+{
+  "title": "Qwen-Image-Edit 2511 (ComfyUI)",
+  "description": "Qwen-Image-Edit-2511 (FP8 mixed) と 4-step Lightning LoRA を焼き込んだ ComfyUI ワーカー。ワークフローは API の input.workflow で渡すため、出力サイズ・ステップ数・LoRA を再ビルドなしで変えられる。",
+  "type": "serverless",
+  "category": "image",
+  "config": {
+    "runsOn": "GPU",
+    "containerDiskInGb": 60,
+    "gpuCount": 1,
+    "gpuIds": "ADA_24,ADA_32_PRO",
+    "allowedCudaVersions": ["12.8"]
+  }
+}
