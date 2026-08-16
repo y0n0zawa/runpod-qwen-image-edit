@@ -22,7 +22,7 @@ This repository avoids the problem by **keeping no workflow inside the image and
 
 | | |
 | --- | --- |
-| Base | `runpod/worker-comfyui:5.8.6-base` |
+| Base | `runpod/worker-comfyui:5.8.6-base-cuda12.8.1` |
 | Diffusion model | `qwen_image_edit_2511_fp8mixed` (19.1 GB) |
 | Text encoder | `qwen_2.5_vl_7b_fp8_scaled` (8.7 GB) |
 | VAE | `qwen_image_vae` (0.24 GB) |
@@ -34,6 +34,17 @@ This repository avoids the problem by **keeping no workflow inside the image and
 The bf16 full weights are 53.7 GB and need an 80 GB-class GPU, but **the FP8 mixed build fits on a 24 GB card**. That difference lands directly on the hourly rate, so it matters for cost.
 
 Models are baked into the image rather than mounted from a network volume. A volume keeps billing you for capacity ($0.07/GB/month) as long as it exists, and reading weights from it makes cold starts slower.
+
+The base tag has to match the CUDA version you declare. `5.8.6-base` installs whatever PyTorch build comfy-cli defaults to, which is newer than CUDA 12.8; pairing it with `"allowedCudaVersions": ["12.8"]` gets you a worker that never starts:
+
+```
+FAIL: The NVIDIA driver on your system is too old (found version 12080).
+GPU is not available or incompatible with this PyTorch build
+```
+
+The image builds and pushes fine — it only falls over at run time, so the failure surfaces as a test timeout rather than a build error. Use the `-cuda12.8.1` tag instead.
+
+Downloads use `wget` against absolute paths rather than `comfy model download`, whose destination depends on comfy-cli's default workspace setting.
 
 ## Usage
 

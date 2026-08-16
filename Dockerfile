@@ -12,7 +12,11 @@
 #
 # モデルはネットワークボリュームではなくイメージに焼き込む。ボリューム経由は
 # 存在するだけで容量課金が続くうえ、コールドスタートも読み出しの分だけ遅い。
-FROM runpod/worker-comfyui:5.8.6-base AS base
+# CUDA 12.8 向けにビルドされた PyTorch が入っている base を明示的に選ぶ。
+# 素の 5.8.6-base は comfy-cli の既定でインストールされるため、より新しい
+# CUDA 向けの PyTorch が入り、hub.json で 12.8 を指定したホストでは
+# "no kernel image is available" で起動に失敗する。
+FROM runpod/worker-comfyui:5.8.6-base-cuda12.8.1 AS base
 
 # モデルはステージを分けて取得する。BuildKit は依存関係のないステージを
 # 並列に実行するため、逐次で 22 分かかっていたダウンロードが、最も大きい
