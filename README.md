@@ -55,3 +55,20 @@ bf16 のフル版は 53.7 GB あり 80GB クラスの GPU が要りますが、*
 AGPL-3.0。ベースにした [worker-comfyui](https://github.com/runpod-workers/worker-comfyui) が AGPL-3.0 であり、その先の [ComfyUI](https://github.com/comfyanonymous/ComfyUI) も GPL 系のため、派生物として継承しています。
 
 モデルの重みはそれぞれの配布元のライセンスに従います。
+
+## ワークフロー
+
+`workflow/qwen-image-edit-16x9.json` が 16:9 出力のサンプルです。API に渡すときは次を差し替えます。
+
+| ノード | 差し替えるもの |
+| --- | --- |
+| `11` `ImageScale` | `width` / `height` (出力解像度) |
+| `21` `TextEncodeQwenImageEditPlus` | `prompt` (positive) |
+| `30` `KSampler` | `seed` / `steps` |
+| `10` `LoadImage` | `image` (`input.images` で渡した `name`) |
+
+既定は 1360x768 (約 1.04 MP・16:9 相当) です。Qwen-Image は 1 メガピクセル前後で学習されているため、極端に大きな解像度は品質が落ちます。最終的な寸法は呼び出し側でリサイズするのが無難です。
+
+## handler について
+
+`handler.py` は [worker-comfyui](https://github.com/runpod-workers/worker-comfyui) のものをそのまま使っています (どちらも AGPL-3.0)。ベースイメージにも同じものが入っていますが、Hub の掲載要件がリポジトリ内の `handler.py` を求めるため、明示的に置いて `COPY` しています。

@@ -36,3 +36,8 @@ RUN comfy model download \
       --url https://huggingface.co/lightx2v/Qwen-Image-Edit-2511-Lightning/resolve/main/Qwen-Image-Edit-2511-Lightning-4steps-V1.0-bf16.safetensors \
       --relative-path models/loras \
       --filename Qwen-Image-Edit-2511-Lightning-4steps-V1.0-bf16.safetensors
+
+# handler はベースイメージにも同じものが入っているが、Hub の掲載要件が
+# リポジトリ内の handler.py を求めるため、明示的に置いて上書きする。
+# 中身は worker-comfyui のものをそのまま使う (どちらも AGPL-3.0)。
+COPY handler.py /handler.py
